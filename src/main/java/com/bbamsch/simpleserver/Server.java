@@ -50,6 +50,8 @@ public class Server {
             while (true) {
                 Socket socket = serverSocket.accept();
 
+                HttpRequest httpRequest = new HttpRequest(socket);
+
                 OutputStream outputStream = socket.getOutputStream();
                 outputStream.close();
 
