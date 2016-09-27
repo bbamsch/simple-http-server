@@ -1,15 +1,15 @@
 package com.bbamsch.simpleserver;
 
-import com.bbamsch.simpleserver.http.HttpRequest;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,6 +25,13 @@ public class Server {
     // Server Configuration File Name
     private static final String SERVER_PROPERTIES_FILE = "server.properties";
 
+    private boolean serverOn = true;
+    private Properties configuration;
+
+    private Server(Properties configuration) {
+        this.configuration = configuration;
+    }
+
     public static void main(String[] args) {
         // Load Configuration from Server Configuration File
         Properties configuration = new Properties();
@@ -36,6 +43,11 @@ public class Server {
             LOGGER.log(Level.WARNING, "Error while reading configuration file: {0}", SERVER_PROPERTIES_FILE);
         }
 
+        Server server = new Server(configuration);
+        server.run();
+    }
+
+    private void run() {
         try {
             // Set up Server Socket based on Server Configuration Values
             InetAddress inetAddress = InetAddress.getByName(
@@ -46,19 +58,25 @@ public class Server {
                     String.valueOf(configuration.getOrDefault("port", "8080")));
             ServerSocket serverSocket = new ServerSocket(port, queueLength, inetAddress);
 
+            Integer numThreads = Integer.parseInt(
+                    String.valueOf(configuration.getOrDefault("num_threads", "1")));
+
             // Begin Server Loop
-            while (true) {
+            ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
+            while (serverShouldContinue()) {
                 Socket socket = serverSocket.accept();
-
-                HttpRequest httpRequest = new HttpRequest(socket);
-
-                OutputStream outputStream = socket.getOutputStream();
-                outputStream.close();
-
-                socket.close();
             }
+            executorService.shutdown();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Unhandled exception at top level", e);
         }
+    }
+
+    private boolean serverShouldContinue() {
+        return serverOn;
+    }
+
+    public Properties getConfiguration() {
+        return configuration;
     }
 }
