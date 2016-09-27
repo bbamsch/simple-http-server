@@ -29,11 +29,7 @@ public class Server {
     private boolean serverOn = true;
     private Properties configuration;
 
-    private Server(Properties configuration) {
-        this.configuration = configuration;
-    }
-
-    public static void main(String[] args) {
+    Server() throws IOException {
         // Load Configuration from Server Configuration File
         Properties configuration = new Properties();
         try {
@@ -43,12 +39,19 @@ public class Server {
         } catch (IOException | SecurityException e) {
             LOGGER.log(Level.WARNING, "Error while reading configuration file: {0}", SERVER_PROPERTIES_FILE);
         }
+        this.configuration = configuration;
+    }
 
-        Server server = new Server(configuration);
+    Server(Properties configuration) {
+        this.configuration = configuration;
+    }
+
+    public static void main(String[] args) throws IOException {
+        Server server = new Server();
         server.run();
     }
 
-    private void run() {
+    void run() {
         try {
             // Set up Server Socket based on Server Configuration Values
             InetAddress inetAddress = InetAddress.getByName(
@@ -76,6 +79,10 @@ public class Server {
 
     private boolean serverShouldContinue() {
         return serverOn;
+    }
+
+    public void shutdown() {
+        serverOn = false;
     }
 
     public Properties getConfiguration() {
