@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/simple-http-server.iml" filepath="$PROJECT_DIR$/simple-http-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/simpleserver.iml" filepath="$PROJECT_DIR$/.idea/modules/simpleserver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/simpleserver_main.iml" filepath="$PROJECT_DIR$/.idea/modules/simpleserver_main.iml" group="simpleserver" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/simpleserver_test.iml" filepath="$PROJECT_DIR$/.idea/modules/simpleserver_test.iml" group="simpleserver" />
     </modules>
   </component>
 </project>
