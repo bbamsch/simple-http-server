@@ -1,5 +1,6 @@
 package com.bbamsch.simpleserver;
 
+import com.bbamsch.simpleserver.task.SocketHandlerTask;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -65,6 +66,7 @@ public class Server {
             ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
             while (serverShouldContinue()) {
                 Socket socket = serverSocket.accept();
+                executorService.submit(new SocketHandlerTask(this, socket));
             }
             executorService.shutdown();
         } catch (Exception e) {
