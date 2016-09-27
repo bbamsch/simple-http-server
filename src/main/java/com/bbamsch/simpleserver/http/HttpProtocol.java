@@ -23,7 +23,7 @@ public enum HttpProtocol {
         this.name = name;
     }
 
-    private String getName() {
+    public String getName() {
         return name;
     }
 
