@@ -19,6 +19,9 @@ import java.util.logging.Logger;
  * <p>
  * Provides very basic HTTP Server functionality
  * - Serve up a file given HTTP Request Details
+ * <p>
+ * Assumptions:
+ * - All requests made to server will be HTTP/1.0 or HTTP/1.1 Requests
  */
 public class Server {
     private static final Logger LOGGER = Logger.getLogger(Server.class.getName());
@@ -55,15 +58,15 @@ public class Server {
         try {
             // Set up Server Socket based on Server Configuration Values
             InetAddress inetAddress = InetAddress.getByName(
-                    String.valueOf(configuration.getOrDefault("ip", "0.0.0.0")));
+                    configuration.getProperty("ip", "0.0.0.0"));
             Integer queueLength = Integer.parseInt(
-                    String.valueOf(configuration.getOrDefault("queue_length", "50")));
+                    configuration.getProperty("queue_length", "50"));
             Integer port = Integer.parseInt(
-                    String.valueOf(configuration.getOrDefault("port", "8080")));
+                    configuration.getProperty("port", "8080"));
             ServerSocket serverSocket = new ServerSocket(port, queueLength, inetAddress);
 
             Integer numThreads = Integer.parseInt(
-                    String.valueOf(configuration.getOrDefault("num_threads", "1")));
+                    configuration.getProperty("num_threads", "1"));
 
             // Begin Server Loop
             ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
@@ -73,7 +76,7 @@ public class Server {
             }
             executorService.shutdown();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Unhandled exception at top level", e);
+            LOGGER.log(Level.SEVERE, "Exception encountered in Top-Level Dispatcher", e);
         }
     }
 

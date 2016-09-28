@@ -28,6 +28,9 @@ public class SocketHandlerTask implements Runnable {
         this.socket = socket;
     }
 
+    /**
+     * Executes the lifecycle of an HTTP Request
+     */
     @Override
     public void run() {
         try {
@@ -35,13 +38,16 @@ public class SocketHandlerTask implements Runnable {
             HttpResponse httpResponse = new HttpResponse(httpRequest);
             OutputStream outputStream = socket.getOutputStream();
 
-            String webRoot = String.valueOf(server.getConfiguration().getOrDefault("content_root", "webroot/"));
+            // Find Path to Resource
+            String webRoot = server.getConfiguration().getProperty("content_root", "webroot/");
             String urlPath = httpRequest.getPath().substring(1);
-
             File file = new File(webRoot, urlPath);
             if (file.isDirectory()) {
-                file = new File(file, "index.html");
+                // Append default file ending if resource is a directory
+                file = new File(file, server.getConfiguration().getProperty("default_file", "index.html"));
             }
+
+            // Handle Serving Resource
             if (file.exists()) {
                 Path filePath = FileSystems.getDefault().getPath(file.getPath());
                 httpResponse.setFilePath(filePath);
@@ -53,7 +59,7 @@ public class SocketHandlerTask implements Runnable {
 
             socket.close();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Exception while running SocketHandlerTask", e);
+            LOGGER.log(Level.SEVERE, "Exception during execution of SocketHandlerTask", e);
         } finally {
             try {
                 if (socket != null && !socket.isClosed()) {
