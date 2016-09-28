@@ -9,10 +9,10 @@ import java.io.FileInputStream;
 import java.net.Socket;
 
 /**
- * Created by Brian on 9/26/2016.
+ * Simple HTTP Request Test
  */
 public class HttpRequestTest {
-    private static final String BASIC_HTTP_REQUEST_FILE = "src/test/resources/basic-http-request.txt";
+    private static final String BASIC_HTTP_REQUEST_FILE = "basic-http-request.txt";
 
     Socket socket;
 

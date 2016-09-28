@@ -15,4 +15,17 @@ dependencies {
     testCompile "org.mockito:mockito-core:1.+"
     testCompile "org.apache.httpcomponents:httpmime:4.5.2"
     testCompile "org.apache.httpcomponents:httpclient:4.5.2"
+    testCompile "commons-io:commons-io:2.4"
+}
+
+test {
+    testLogging {
+        events 'started', 'passed'
+    }
+
+    workingDir new File('build/resources/test')
+
+    beforeTest {
+        descriptor -> logger.lifecycle("Running test: " + descriptor)
+    }
 }
